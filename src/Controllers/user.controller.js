@@ -2,12 +2,24 @@ const User = require("../Models/User");
 const asyncHandler = require("express-async-handler");
 
 // ----------------------------
-// for creating new User
-const addUser = asyncHandler(async (req, res) => {
+// for creating/registering a new User
+const registerUser = asyncHandler(async (req, res) => {
   const body = req.body;
-  const newUser = new User(body);
-  const savedUser = await newUser.save();
-  res.status(201).json({ message: "New User added Successfully", savedUser });
+
+  const userExists = await User.findOne({ email: body.email });
+  if (userExists) {
+    return res
+      .status(400)
+      .json({ message: "User already exists", status: false });
+  } else {
+    const newUser = new User(body);
+    const savedUser = await newUser.save();
+    return res.status(201).json({
+      message: "New User added Successfully",
+      savedUser,
+      status: true,
+    });
+  }
 });
 
 // ----------------------------
@@ -50,4 +62,4 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { addUser, findAllUsers, updateUser, deleteUser };
+module.exports = { registerUser, findAllUsers, updateUser, deleteUser };

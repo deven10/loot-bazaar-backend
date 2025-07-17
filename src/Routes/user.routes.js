@@ -4,14 +4,14 @@ const userRouter = express.Router();
 userRouter.use(express.json());
 
 const {
-  addUser,
+  registerUser,
   findAllUsers,
   updateUser,
   deleteUser,
 } = require("../Controllers/user.controller");
 
-// creating a new user
-userRouter.post("/", addUser);
+// creating/registering a new user
+userRouter.post("/", registerUser);
 
 // fetching all users
 userRouter.get("/", findAllUsers);
