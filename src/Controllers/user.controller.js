@@ -1,5 +1,6 @@
 const User = require("../Models/User");
 const asyncHandler = require("express-async-handler");
+const { generateToken } = require("../utils");
 
 // ----------------------------
 // for creating/registering a new User
@@ -13,10 +14,12 @@ const registerUser = asyncHandler(async (req, res) => {
       .json({ message: "User already exists", status: false });
   } else {
     const newUser = new User(body);
-    const savedUser = await newUser.save();
+    const user = await newUser.save();
+    const userData = user.toObject();
+    delete userData.password;
     return res.status(201).json({
       message: "New User added Successfully",
-      savedUser,
+      user: { ...userData, token: generateToken(userData._id) },
       status: true,
     });
   }
