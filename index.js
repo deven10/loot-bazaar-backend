@@ -3,6 +3,7 @@ require("./db");
 const userRouter = require("./src/Routes/user.routes");
 const authRouter = require("./src/Routes/auth.routes");
 const categoryRouter = require("./src/Routes/category.routes");
+const productRouter = require("./src/Routes/product.routes");
 
 const express = require("express");
 const cors = require("cors");
@@ -14,6 +15,7 @@ app.use(cors());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
 
 app.get("/", (req, res) => {
   res.send("<h1> Loot Bazaar 🚀 </h1>");
