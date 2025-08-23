@@ -24,40 +24,54 @@ const createProduct = asyncHandler(async (req, res) => {
       category: req.body.category,
     });
     await product.save();
-    res.json(product);
+    return res.status(201).json({
+      message: "New Product added Successfully",
+      product,
+      status: true,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
   }
 });
 
 // ----------------------------
 // Get all Product
 const findAllProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
+  try {
+    const products = await Product.find();
+    // res.json(products);
+    return res.status(200).json({
+      message: "Products found",
+      products,
+      status: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
+  }
 });
 
 // ----------------------------
-// Update category
-// const updateCategory = asyncHandler(async (req, res) => {
-//   try {
-//     const category = await Product.findById(req.params.id);
-//     if (!category) return res.status(404).send("Not found");
+// Get single Product
+const findSingleProduct = asyncHandler(async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    return res.status(200).json({
+      message: "Product found",
+      product,
+      status: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
+  }
+});
 
-//     // If new image is uploaded
-//     if (req.file) {
-//       const result = await cloudinary.uploader.upload(req.file.path);
-//       category.imageUrl = result.secure_url;
-//       fs.unlinkSync(req.file.path);
-//     }
-
-//     category.name = req.body.name || category.name;
-//     category.isPrimary = req.body.isPrimary || category.isPrimary;
-//     await category.save();
-//     res.json(category);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
-module.exports = { createProduct, findAllProducts };
+module.exports = { createProduct, findAllProducts, findSingleProduct };

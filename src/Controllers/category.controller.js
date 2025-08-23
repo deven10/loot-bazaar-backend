@@ -15,17 +15,35 @@ const createCategory = asyncHandler(async (req, res) => {
     });
     await category.save();
     fs.unlinkSync(req.file.path);
-    res.json(category);
+    return res.status(201).json({
+      message: "New Category created Successfully",
+      category,
+      status: true,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
   }
 });
 
 // ----------------------------
 // Get all categories
 const findAllCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find();
-  res.json(categories);
+  try {
+    const categories = await Category.find();
+    return res.status(200).json({
+      message: "Categories found",
+      categories,
+      status: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
+  }
 });
 
 // ----------------------------
@@ -46,8 +64,16 @@ const updateCategory = asyncHandler(async (req, res) => {
     category.isPrimary = req.body.isPrimary || category.isPrimary;
     await category.save();
     res.json(category);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(201).json({
+      message: "Category updated Successfully",
+      category,
+      status: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
   }
 });
 

@@ -5,22 +5,28 @@ const { generateToken } = require("../utils");
 // ----------------------------
 // for creating/registering a new User
 const registerUser = asyncHandler(async (req, res) => {
-  const body = req.body;
-
-  const userExists = await User.findOne({ email: body.email });
-  if (userExists) {
-    return res
-      .status(400)
-      .json({ message: "User already exists", status: false });
-  } else {
-    const newUser = new User(body);
-    const user = await newUser.save();
-    const userData = user.toObject();
-    delete userData.password;
-    return res.status(201).json({
-      message: "New User added Successfully",
-      user: { ...userData, token: generateToken(userData._id) },
-      status: true,
+  try {
+    const body = req.body;
+    const userExists = await User.findOne({ email: body.email });
+    if (userExists) {
+      return res
+        .status(400)
+        .json({ message: "User already exists", status: false });
+    } else {
+      const newUser = new User(body);
+      const user = await newUser.save();
+      const userData = user.toObject();
+      delete userData.password;
+      return res.status(201).json({
+        message: "New User added Successfully",
+        user: { ...userData, token: generateToken(userData._id) },
+        status: true,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
     });
   }
 });
@@ -28,40 +34,68 @@ const registerUser = asyncHandler(async (req, res) => {
 // ----------------------------
 // for getting all Users
 const findAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find();
-  if (users.length > 0) {
-    res.status(200).json({ message: "users fetched successfully", users });
-  } else {
-    res.status(204).json({ message: "No user found" });
+  try {
+    const users = await User.find();
+    if (users.length > 0) {
+      res.status(200).json({
+        message: "users fetched successfully",
+        users,
+        status: true,
+      });
+    } else {
+      res.status(204).json({ message: "No user found", status: false });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
   }
 });
 
 // ----------------------------
 // for updating an User
 const updateUser = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-  const body = req.body;
-  const user = await User.findByIdAndUpdate(userId, body, {
-    new: true,
-    runValidators: true,
-  });
-  if (user) {
-    res.status(200).json({ message: "user updated successfully", user });
-  } else {
-    res.status(204).json({ message: "No user found" });
+  try {
+    const { userId } = req.params;
+    const body = req.body;
+    const user = await User.findByIdAndUpdate(userId, body, {
+      new: true,
+      runValidators: true,
+    });
+    if (user) {
+      res
+        .status(200)
+        .json({ message: "user updated successfully", user, status: true });
+    } else {
+      res.status(204).json({ message: "No user found", status: false });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
   }
 });
 
 // --------------------------------------
 // delete an existing User
-
 const deleteUser = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-  const user = await User.findByIdAndDelete(userId);
-  if (user) {
-    res.status(200).json({ message: "user deleted successfully", user });
-  } else {
-    res.status(204).json({ message: "No user found" });
+  try {
+    const { userId } = req.params;
+    const user = await User.findByIdAndDelete(userId);
+    if (user) {
+      res
+        .status(200)
+        .json({ message: "user deleted successfully", user, status: true });
+    } else {
+      res.status(204).json({ message: "No user found", status: false });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: false,
+    });
   }
 });
 

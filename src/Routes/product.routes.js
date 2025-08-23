@@ -3,6 +3,7 @@ const multer = require("multer");
 const {
   createProduct,
   findAllProducts,
+  findSingleProduct,
 } = require("../Controllers/product.controller");
 const productRouter = express.Router();
 
@@ -14,6 +15,9 @@ productRouter.post("/", upload.array("images", 5), createProduct);
 
 // fetching all products
 productRouter.get("/", findAllProducts);
+
+// fetching single products
+productRouter.get("/:id", findSingleProduct);
 
 // updating a particular user
 // productRouter.post("/:userId", updateUser);
