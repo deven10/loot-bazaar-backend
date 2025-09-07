@@ -4,18 +4,25 @@ const userRouter = require("./src/Routes/user.routes");
 const authRouter = require("./src/Routes/auth.routes");
 const categoryRouter = require("./src/Routes/category.routes");
 const productRouter = require("./src/Routes/product.routes");
+const cartRouter = require("./src/Routes/cart.routes");
 
 const express = require("express");
 const cors = require("cors");
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // frontend URL
+    credentials: true, // allow cookies & headers like Authorization
+  })
+);
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
+app.use("/api/cart", cartRouter);
 
 app.get("/", (req, res) => {
   res.send("<h1> Loot Bazaar 🚀 </h1>");
